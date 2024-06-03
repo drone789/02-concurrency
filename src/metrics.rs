@@ -3,14 +3,16 @@
 
 use std::{
     collections::HashMap,
-    sync::{Arc, Mutex},
+    fmt,
+    sync::{Arc, RwLock},
 };
 
 use anyhow::{anyhow, Result};
 
 #[derive(Debug, Clone)]
 pub struct Metrics {
-    data: Arc<Mutex<HashMap<String, i64>>>,
+    data: Arc<RwLock<HashMap<String, i64>>>,
+    // data: Arc<Mutex<HashMap<String, i64>>>,
     // Arc 用于多线程环境下共享 Metrics 结构体的所有权，确保多个线程可以同时访问 Metrics 实例
 }
 
@@ -23,7 +25,7 @@ impl Default for Metrics {
 impl Metrics {
     pub fn new() -> Self {
         Self {
-            data: Arc::new(Mutex::new(HashMap::new())),
+            data: Arc::new(RwLock::new(HashMap::new())),
         }
     }
 
@@ -34,7 +36,7 @@ impl Metrics {
         // 如果 lock() 方法执行失败，会返回一个 PoisonError 对象，表示获取锁失败。
         // 通过使用 map_err(|e| anyhow!(e.to_string()))，
         // 在出现错误时将错误信息转换为一个 anyhow 的 Result 类型，这样可以更加方便地处理错误，同时保留了错误的具体信息，有助于调试和排查问题。
-        let mut data = self.data.lock().map_err(|e| anyhow!(e.to_string()))?;
+        let mut data = self.data.write().map_err(|e| anyhow!(e.to_string()))?;
 
         // ?
         // self.data.lock() 成功获取到了锁，返回一个 Ok(MutexGuard<T>)
@@ -55,8 +57,18 @@ impl Metrics {
     pub fn snopshot(&self) -> Result<HashMap<String, i64>> {
         Ok(self
             .data
-            .lock()
+            .read()
             .map_err(|e| anyhow!(e.to_string()))?
             .clone())
+    }
+}
+
+impl fmt::Display for Metrics {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let data = self.data.read().map_err(|_e| fmt::Error {})?;
+        for (key, value) in data.iter() {
+            writeln!(f, "{}: {}", key, value)?;
+        }
+        Ok(())
     }
 }

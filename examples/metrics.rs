@@ -34,7 +34,11 @@ fn main() -> Result<()> {
 
     loop {
         thread::sleep(Duration::from_secs(2));
-        println!("{:?}", metrics.snopshot());
+
+        // println!("{:?}", metrics.snopshot());
+
+        // 给Metrics实现Display 可以直接打印
+        println!("{}", metrics);
     }
 
     // Ok(())
