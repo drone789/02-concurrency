@@ -15,3 +15,7 @@ Mutex.lock() -> MutexGuard !send 不能在线程之前传递
 - RwLock
   - read()
   - write()
+
+> 基本是从 Mutex 平滑替换到 RwLock
+
+## DashMap
