@@ -12,19 +12,19 @@ use dashmap::DashMap;
 use anyhow::Result;
 
 #[derive(Debug, Clone)]
-pub struct Metrics {
+pub struct CmapMetrics {
     data: Arc<DashMap<String, i64>>,
     // data: Arc<Mutex<HashMap<String, i64>>>,
     // Arc 用于多线程环境下共享 Metrics 结构体的所有权，确保多个线程可以同时访问 Metrics 实例
 }
 
-impl Default for Metrics {
+impl Default for CmapMetrics {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Metrics {
+impl CmapMetrics {
     pub fn new() -> Self {
         Self {
             data: Arc::new(DashMap::new()),
@@ -68,7 +68,7 @@ impl Metrics {
     // }
 }
 
-impl fmt::Display for Metrics {
+impl fmt::Display for CmapMetrics {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for entry in self.data.iter() {
             writeln!(f, "{}: {}", entry.key(), entry.value())?;

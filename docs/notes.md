@@ -18,4 +18,9 @@ Mutex.lock() -> MutexGuard !send 不能在线程之前传递
 
 > 基本是从 Mutex 平滑替换到 RwLock
 
-## DashMap
+## 3 DashMap 支持并发的 HashMap
+
+## 4 AtomicXXX
+
+- fetch // 读
+- load // 写
