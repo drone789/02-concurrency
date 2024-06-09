@@ -24,3 +24,9 @@ Mutex.lock() -> MutexGuard !send 不能在线程之前传递
 
 - fetch // 读
 - load // 写
+
+## 5 dummy redis
+
+```
+cargo add  tokio --features rt-multi-thread --features macros --features net --features io-util
+```
